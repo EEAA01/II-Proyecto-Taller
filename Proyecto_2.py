@@ -9,24 +9,22 @@ height = 1000
 window = pygame.display.set_mode((width,height))
 pygame.display.set_caption("Operation Moon Light")
 font_type = pygame.font.SysFont("Blacklight",40)
-Background = pygame.transform.scale(pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 1. Brad Sardi\Files\background.png"),(width,height))
+#Background = pygame.transform.scale(pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 1. Brad Sardi\Files\background.png"),(width,height))
 
 #player settings
 
 player_list =[50,300,800,10,0,]
 
 def main():
+    #main game loop 
     FPS = 60
     run = True 
 
-    
-    
-
-    
     clock = pygame.time.Clock()
     # refreshes all functions and the screen 
     def refresh():
-        window.blit(Background,(0,0))
+        pygame.draw.rect (window,(0,0,0),(0,0,width,height))
+        #window.blit(Background,(0,0))
         pygame.draw.rect (window,(255,0,0),(player_list[1],player_list[2],70,70))
                
         pygame.display.update()
