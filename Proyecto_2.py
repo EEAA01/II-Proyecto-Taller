@@ -15,32 +15,42 @@ font_type = pygame.font.SysFont("Blacklight",40)
 
 player_list =[50,300,800,10] # 0-health 1-x value 2-y value 3-player speed 
 
-enemy = [0,0,10,10]# 0-xvalue 1-y value 2-x speed 3-y speed move 
+enemies = []
+for i in range (0,5):
+    
+    enemy_x = random.randrange(0,width-20) 
+    enemy_y = random.choice ([0,height-20])
+    enemyx_speed = random.randrange(5,10)
+    enemyy_speed = random.randrange(5,10)
+    enemy = [enemy_x,enemy_y,enemyx_speed,enemyy_speed]
+    enemies.append(enemy)
 
 def main():
     #main game loop 
     FPS = 60
     run = True 
     #movement for enemy
-    def enemy_move (enemy):
-        x = enemy [0]
-        y = enemy [1]
-        x_speed = enemy [2]
-        y_speed = enemy [3]
-        
-        #checks if the enemy is within the borders of the screen 
-        if x + x_speed + 20 < width and x + x_speed > 0:
-            enemy[0] += x_speed
-        #if the enemy touches the left or right side  border it reverses the value of x 
-        elif x + x_speed + 20 >= width or x + x_speed <= 0:
-            enemy[2] = x_speed* -1
+    def enemy_move (enemy_list):
+        for enemy in enemies: 
+
+            x = enemy [0]
+            y = enemy [1]
+            x_speed = enemy [2]
+            y_speed = enemy [3]
+        #print (x_speed)
+            if x + x_speed + 20 < width and x + x_speed > 2:
+                enemy[0] = enemy[0]+x_speed
+                #print(x)
+
+            elif x + x_speed + 20 >= width or x + x_speed <= 15:
             
+                enemy[2] = enemy[2]*-1
+                #print(enemy[2])
             
-        if y + y_speed + 20 < height and y + y_speed > 0:
-            enemy [1] += y_speed
-        #if the enemy touches the top or bottom side border it reverses the value of y 
-        elif  y + y_speed + 20 >= width or y + y_speed <= 0:
-            enemy[3] = y_speed * -1
+            if y + y_speed + 20 < height and y + y_speed > 0:
+                enemy [1] += y_speed
+            elif  y + y_speed + 20 >= width or y + y_speed <= 0:
+                enemy[3] = y_speed * -1
             
 
     clock = pygame.time.Clock()
@@ -53,7 +63,8 @@ def main():
         #player
         pygame.draw.rect (window,(255,0,0),(player_list[1],player_list[2],70,70))
         #enemy 
-        pygame.draw.rect (window,(0,255,0),(enemy[0],enemy[1],20,20))
+       for enemy in enemies:
+            pygame.draw.rect (window,(0,255,0),(enemy[0],enemy[1],20,20))
                
         pygame.display.update()
 
