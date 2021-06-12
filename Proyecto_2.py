@@ -7,25 +7,53 @@ pygame.font.init()
 width = 700
 height = 1000
 window = pygame.display.set_mode((width,height))
-pygame.display.set_caption("Operation Moon Light")
+pygame.display.set_caption("Meteorite rain")
 font_type = pygame.font.SysFont("Blacklight",40)
 #Background = pygame.transform.scale(pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 1. Brad Sardi\Files\background.png"),(width,height))
 
 #player settings
 
-player_list =[50,300,800,10,0,]
+player_list =[50,300,800,10] # 0-health 1-x value 2-y value 3-player speed 
+
+enemy = [0,0,10,10]# 0-xvalue 1-y value 2-x speed 3-y speed move 
 
 def main():
     #main game loop 
     FPS = 60
     run = True 
+    #movement for enemy
+    def enemy_move (enemy):
+        x = enemy [0]
+        y = enemy [1]
+        x_speed = enemy [2]
+        y_speed = enemy [3]
+        
+        #checks if the enemy is within the borders of the screen 
+        if x + x_speed + 20 < width and x + x_speed > 0:
+            enemy[0] += x_speed
+        #if the enemy touches the left or right side  border it reverses the value of x 
+        elif x + x_speed + 20 >= width or x + x_speed <= 0:
+            enemy[2] = x_speed* -1
+            
+            
+        if y + y_speed + 20 < height and y + y_speed > 0:
+            enemy [1] += y_speed
+        #if the enemy touches the top or bottom side border it reverses the value of y 
+        elif  y + y_speed + 20 >= width or y + y_speed <= 0:
+            enemy[3] = y_speed * -1
+            
 
     clock = pygame.time.Clock()
-    # refreshes all functions and the screen 
+    # refreshes the new image on the screen  
     def refresh():
+       
+        #background
         pygame.draw.rect (window,(0,0,0),(0,0,width,height))
         #window.blit(Background,(0,0))
+        #player
         pygame.draw.rect (window,(255,0,0),(player_list[1],player_list[2],70,70))
+        #enemy 
+        pygame.draw.rect (window,(0,255,0),(enemy[0],enemy[1],20,20))
                
         pygame.display.update()
 
@@ -35,11 +63,13 @@ def main():
 
 
         refresh()
+        #Checks if the user has quit the game 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False 
                 
             pressed_keys= pygame.key.get_pressed()
+            #checkes which key the user has pressed and acts accordingly 
             if pressed_keys[pygame.K_a] and player_list[1] - player_list[3] > 0:
                 player_list[1] -= player_list[3]
             if pressed_keys[pygame.K_d] and player_list[1] + player_list[3] + 70-5 < width:
