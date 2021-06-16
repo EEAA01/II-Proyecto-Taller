@@ -7,29 +7,62 @@ pygame.font.init()
 width = 700
 height = 1000
 window = pygame.display.set_mode((width,height))
-pygame.display.set_caption("Meteorite rain")
+pygame.display.set_caption("Operation Moon Light")
 font_type = pygame.font.SysFont("Blacklight",40)
-#Background = pygame.transform.scale(pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 1. Brad Sardi\Files\background.png"),(width,height))
+Background = pygame.transform.scale(pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 1. Brad Sardi\Files\background.png"),(width,height))
+
+#Import files 
+player_img = pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 2\files\player.png")
+enemy_img = pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 2\files\meteor1.png")
+
+#Masks
+player_mask = pygame.mask.from_surface(player_img)
+enemy_mask = pygame.mask.from_surface(enemy_img)
 
 #player settings
 
-player_list =[50,300,800,10] # 0-health 1-x value 2-y value 3-player speed 
+player_list =[50,300,800,10,player_img,player_mask] # 0-health 1-x value 2-y value 3-player speed 4-player img 5-player mask 
 
+#enemies 
 enemies = []
-for i in range (0,5):
+# creates all enemies and puts them on a list
+for i in range (0,3):
     
     enemy_x = random.randrange(0,width-20) 
     enemy_y = random.choice ([0,height-20])
-    enemyx_speed = random.randrange(5,10)
-    enemyy_speed = random.randrange(5,10)
-    enemy = [enemy_x,enemy_y,enemyx_speed,enemyy_speed]
+    enemyx_speed = random.randrange(0,5)
+    enemyy_speed = random.randrange(0,5)
+    enemy = [enemy_x,enemy_y,enemyx_speed,enemyy_speed,enemy_img,enemy_mask] # 0- x 1-y 2-x speed 3- y speed 4-image 5-mask
     enemies.append(enemy)
 
+def collision_detect (obj1,obj2):
+    obj1_x = obj1[0]
+    obj1_y = obj1[1]
+    obj2_x = obj2[0]
+    obj2_y = obj2[1]
+    obj1_mask = obj1[2]
+    obj2_mask = obj2[2]
+    
+
+    offsetx = int(obj2_x - obj1_x)
+    offsety = int(obj2_y - obj1_y)
+    result = obj1_mask.overlap (obj2_mask,(offsetx,offsety))
+    
+    
+
+    if result != None:
+        
+        return True 
+    else:
+
+        return False
+
+
+
 def main():
-    #main game loop 
     FPS = 60
     run = True 
-    #movement for enemy
+
     def enemy_move (enemy_list):
         for enemy in enemies: 
 
@@ -38,6 +71,8 @@ def main():
             x_speed = enemy [2]
             y_speed = enemy [3]
         #print (x_speed)
+        
+        
             if x + x_speed + 20 < width and x + x_speed > 2:
                 enemy[0] = enemy[0]+x_speed
                 #print(x)
@@ -53,18 +88,24 @@ def main():
                 enemy[3] = y_speed * -1
             
 
+    
+
+    
     clock = pygame.time.Clock()
-    # refreshes the new image on the screen  
+    # refreshes all functions and the screen 
     def refresh():
-       
-        #background
+        enemy_move(enemies)
+
         pygame.draw.rect (window,(0,0,0),(0,0,width,height))
-        #window.blit(Background,(0,0))
-        #player
-        pygame.draw.rect (window,(255,0,0),(player_list[1],player_list[2],70,70))
-        #enemy 
-       for enemy in enemies:
-            pygame.draw.rect (window,(0,255,0),(enemy[0],enemy[1],20,20))
+        window.blit(player_list[4],(player_list[1],player_list[2]))
+        for enemy in enemies:
+
+            if collision_detect([enemy[0],enemy[1],enemy[5]],[player_list[1],player_list[2],player_list[5]]):
+                enemies.remove(enemy)
+            window.blit(enemy[4],(enemy[0],enemy[1]))
+
+        
+
                
         pygame.display.update()
 
@@ -74,20 +115,18 @@ def main():
 
 
         refresh()
-        #Checks if the user has quit the game 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False 
                 
             pressed_keys= pygame.key.get_pressed()
-            #checkes which key the user has pressed and acts accordingly 
             if pressed_keys[pygame.K_a] and player_list[1] - player_list[3] > 0:
                 player_list[1] -= player_list[3]
-            if pressed_keys[pygame.K_d] and player_list[1] + player_list[3] + 70-5 < width:
+            if pressed_keys[pygame.K_d] and player_list[1] + player_list[3] + player_img.get_width() - 5 < width:
                 player_list[1] += player_list[3]
             if pressed_keys[pygame.K_w] and player_list[2] - player_list[3] > 0:
                 player_list[2] -= player_list[3]
-            if pressed_keys[pygame.K_s] and player_list[2] + player_list[3] + 70-5< height:
+            if pressed_keys[pygame.K_s] and player_list[2] + player_list[3] + player_img.get_height() -5 < height:
                 player_list[2] += player_list[3]
             
 
