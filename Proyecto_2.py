@@ -1,32 +1,37 @@
 import pygame 
 import random
 pygame.font.init()
+pygame.mixer.init()
 
 
 # display settings 
-width = 700
-height = 1000
+width = 700 #ANCHO DE LA VENTANA
+height = 700 #ALTO DE LA VENTANA
 window = pygame.display.set_mode((width,height))
 pygame.display.set_caption("Operation Moon Light")
 font_type = pygame.font.SysFont("Blacklight",40)
-Background = pygame.transform.scale(pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 1. Brad Sardi\Files\background.png"),(width,height))
+Background = pygame.transform.scale(pygame.image.load("Imagenes\\background.png"),(width,height))
 
 #Import files 
-player_img = pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 2\files\player.png")
-enemy_img = pygame.image.load(r"C:\Users\Brad\Desktop\Intro-Taller\Proyecto 2\files\meteor1.png")
+player_img = pygame.image.load("Imagenes\\player.png")
+enemy_img = pygame.image.load("Imagenes\\meteor1.png")
 
 #Masks
 player_mask = pygame.mask.from_surface(player_img)
 enemy_mask = pygame.mask.from_surface(enemy_img)
 
+#CARGAR SONIDO DE COLISION
+collision_sound = pygame.mixer.Sound("Sonidos\\colision.wav")
+
 #player settings
 
-player_list =[50,300,800,10,player_img,player_mask] # 0-health 1-x value 2-y value 3-player speed 4-player img 5-player mask 
+player_list =[50,300,500,10,player_img,player_mask] # 0-health 1-x value 2-y value 3-player speed 4-player img 5-player mask 
 
-#enemies 
+#enemies list
 enemies = []
+
 # creates all enemies and puts them on a list
-for i in range (0,3):
+for i in range (0,9):
     
     enemy_x = random.randrange(0,width-20) 
     enemy_y = random.choice ([0,height-20])
@@ -35,7 +40,7 @@ for i in range (0,3):
     enemy = [enemy_x,enemy_y,enemyx_speed,enemyy_speed,enemy_img,enemy_mask] # 0- x 1-y 2-x speed 3- y speed 4-image 5-mask
     enemies.append(enemy)
 
-def collision_detect (obj1,obj2):
+def collision_detect (obj1,obj2): #FUNCION PARA DETECTAR COLISIONES 
     obj1_x = obj1[0]
     obj1_y = obj1[1]
     obj2_x = obj2[0]
@@ -48,20 +53,30 @@ def collision_detect (obj1,obj2):
     offsety = int(obj2_y - obj1_y)
     result = obj1_mask.overlap (obj2_mask,(offsetx,offsety))
     
-    
-
     if result != None:
-        
+        collision_sound.play()
         return True 
     else:
 
         return False
 
 
-
-def main():
+def main(lvl):
     FPS = 60
     run = True 
+    
+    #permite verificar cúal musica se va a reproducir
+    if lvl == 1:
+        pygame.mixer.music.load("Sonidos\\level_1.wav")#CARGA LA MUSICA
+        pygame.mixer.music.play(loops=-1) #PERMITE REPRODUCIR LA MUSICA DE MANERA INFINITA
+
+    elif lvl == 2:
+         pygame.mixer.music.load("Sonidos\\level_2.ogg")#CARGA LA MUSICA
+         pygame.mixer.music.play(loops=-1) #PERMITE REPRODUCIR LA MUSICA DE MANERA INFINITA
+    else:
+        pass
+        pygame.mixer.music.load("Sonidos\\level_3.wav")#CARGA LA MUSICA
+        pygame.mixer.music.play(loops=-1) #PERMITE REPRODUCIR LA MUSICA DE MANERA INFINITA
 
     def enemy_move (enemy_list):
         for enemy in enemies: 
@@ -70,25 +85,19 @@ def main():
             y = enemy [1]
             x_speed = enemy [2]
             y_speed = enemy [3]
-        #print (x_speed)
-        
         
             if x + x_speed + 20 < width and x + x_speed > 2:
                 enemy[0] = enemy[0]+x_speed
-                #print(x)
 
             elif x + x_speed + 20 >= width or x + x_speed <= 15:
-            
+        
                 enemy[2] = enemy[2]*-1
-                #print(enemy[2])
             
             if y + y_speed + 20 < height and y + y_speed > 0:
                 enemy [1] += y_speed
             elif  y + y_speed + 20 >= width or y + y_speed <= 0:
                 enemy[3] = y_speed * -1
             
-
-    
 
     
     clock = pygame.time.Clock()
@@ -103,16 +112,11 @@ def main():
             if collision_detect([enemy[0],enemy[1],enemy[5]],[player_list[1],player_list[2],player_list[5]]):
                 enemies.remove(enemy)
             window.blit(enemy[4],(enemy[0],enemy[1]))
-
-        
-
                
         pygame.display.update()
 
     while run :
         clock.tick(FPS)
-
-
 
         refresh()
         for event in pygame.event.get():
@@ -136,6 +140,11 @@ def main_menu():
     title_font = pygame.font.SysFont("comicsansms",90)
     menu_items_font = pygame.font.SysFont("comicsansms",50)
     menu_instructions_font = pygame.font.SysFont("comicsansms",15)
+    
+    #PERMITE INGRESAR LA MUSICA DE FONDO
+    pygame.mixer.music.load("Sonidos\\principal.mp3")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(loops=-1)
 
     selector = 1
     Level = 1
@@ -209,12 +218,6 @@ def main_menu():
 
                                                 
 
-
-
-    
-   
-
-
     while runmain:
         clock.tick(FPS)
         window.blit(Background,(0,0))
@@ -252,18 +255,15 @@ def main_menu():
         
 
         if selector == 1 and choice == True:
+            pygame.mixer.music.stop()
+            main (Level)
 
-            main ()
         elif selector == 2 and choice == True:
              Instructions_screen()
         elif selector == 3 and choice == True:
              about (window)
         elif selector == 4 and choice == True:
              highscore_screen(window, highscore_path)
-
-
-
-        
 
 
         pygame.display.update() 
@@ -290,4 +290,4 @@ def main_menu():
 
 
 
-main()
+main_menu()
