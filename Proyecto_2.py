@@ -11,6 +11,7 @@ window = pygame.display.set_mode((width,height))
 pygame.display.set_caption("Operation Moon Light")
 font_type = pygame.font.SysFont("Blacklight",40)
 Background = pygame.transform.scale(pygame.image.load("Imagenes\\background.png"),(width,height))
+pygame.key.set_repeat(10,5)
 
 #Import files 
 player_img = pygame.image.load("Imagenes\\player.png")
@@ -25,7 +26,7 @@ collision_sound = pygame.mixer.Sound("Sonidos\\colision.wav")
 
 #player settings
 
-player_list =[50,300,500,10,player_img,player_mask] # 0-health 1-x value 2-y value 3-player speed 4-player img 5-player mask 
+player_list =[50,300,500,5,player_img,player_mask] # 0-health 1-x value 2-y value 3-player speed 4-player img 5-player mask 
 
 #enemies list
 enemies = []
@@ -124,13 +125,13 @@ def main(lvl):
                 run = False 
                 
             pressed_keys= pygame.key.get_pressed()
-            if pressed_keys[pygame.K_a] and player_list[1] - player_list[3] > 0:
+            if pressed_keys[pygame.K_LEFT] and player_list[1] - player_list[3] > 0:
                 player_list[1] -= player_list[3]
-            if pressed_keys[pygame.K_d] and player_list[1] + player_list[3] + player_img.get_width() - 5 < width:
+            if pressed_keys[pygame.K_RIGHT] and player_list[1] + player_list[3] + player_img.get_width() - 5 < width:
                 player_list[1] += player_list[3]
-            if pressed_keys[pygame.K_w] and player_list[2] - player_list[3] > 0:
+            if pressed_keys[pygame.K_UP] and player_list[2] - player_list[3] > 0:
                 player_list[2] -= player_list[3]
-            if pressed_keys[pygame.K_s] and player_list[2] + player_list[3] + player_img.get_height() -5 < height:
+            if pressed_keys[pygame.K_DOWN] and player_list[2] + player_list[3] + player_img.get_height() -5 < height:
                 player_list[2] += player_list[3]
             
 
