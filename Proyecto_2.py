@@ -36,7 +36,7 @@ player_list =[3,300,500,5,player_img,player_mask,0,""] # 0-health 1-x value 2-y 
 enemies = []
 
 #Timer
-time_list = [0,55]
+time_list = [0,0]
 
 #controls time and score based on time
 def Timer (time_list,lvl):
@@ -94,7 +94,7 @@ def Lost(window): # Game over screen
         time.sleep(2)
         for event in pygame.event.get():# checks for any pressed key
            if event.type == pygame.KEYDOWN:
-                #time_list[1] = 0 #REINICIA EL TIEMPO
+                time_list[1] = 0 #REINICIA EL TIEMPO
                 global enemies
                 enemies = [] #PERMITE REINICIAR LA CANTIDAD DE ASTEROIDES Y QUE NO SE ACUMULEN
                 main_menu()
@@ -135,7 +135,7 @@ def level_passed(window,Level):
         for event in pygame.event.get():
            if event.type == pygame.KEYDOWN:
                 time_list[0] = 0
-                time_list[1] = 55
+                time_list[1] = 0
                 player_list[0] = 3
                 global enemies
                 enemies = []
@@ -158,7 +158,7 @@ def Particion(lista, menor, mayor): #mayor seria el largo de la lista, es decir 
             fila_izq += 1
         while punt_izq <= punt_der and punt_der <= pivote:
             punt_der = punt_der[mayor-1][1]
-             fila_der -= 1
+            fila_der -= 1
         if punt_der < punt_izq:
             break
         else:
