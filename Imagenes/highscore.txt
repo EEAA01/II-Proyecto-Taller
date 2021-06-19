@@ -1,7 +1,8 @@
-Carlos 80
-Edson, 30
+Carlos, 80
+choiiis,75
 ASDF, 27
-Adn, 19
+asdfa,25
 Cris, 10
 Steve, 6
-Cozz, 4
+z, 4
+

@@ -94,7 +94,7 @@ def Lost(window): # Game over screen
         time.sleep(2)
         for event in pygame.event.get():# checks for any pressed key
            if event.type == pygame.KEYDOWN:
-                time_list[1] = 0 #REINICIA EL TIEMPO
+                #time_list[1] = 0 #REINICIA EL TIEMPO
                 global enemies
                 enemies = [] #PERMITE REINICIAR LA CANTIDAD DE ASTEROIDES Y QUE NO SE ACUMULEN
                 main_menu()
@@ -144,7 +144,37 @@ def level_passed(window,Level):
            if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-    
+
+#
+def Particion(lista, menor, mayor): #mayor seria el largo de la lista, es decir 7
+    pivote = int(lista[menor][1]) #pivote seria el primer puntaje en la lista
+    punt_izq = int(lista[menor+1][1]) #puntero izquierdo seria el segundo puntaje en la lista
+    punt_der = int(lista[mayor][1])#puntero derecho seria el ultimo puntaje en la lista
+    fila_izq= menor
+    fila_der = mayor
+    while True:
+        while punt_izq <= punt_der and punt_izq >= pivote:
+            punt_izq = punt_izq[menor+1][1]
+            fila_izq += 1
+        while punt_izq <= punt_der and punt_der <= pivote:
+            punt_der = punt_der[mayor-1][1]
+             fila_der -= 1
+        if punt_der < punt_izq:
+            break
+        else:
+            lista[fila_izq], lista[fila_der] = lista[fila_der], lista[fila_izq]
+    lista[menor], lista[fila_der] = [fila_der], fila[menor]
+
+    return punt_der
+
+#FUNCION PARA ORDENAMIENTO
+def quicksort(lista, menor, mayor):
+    if menor < mayor:
+
+        pivote = Particion(lista, menor, mayor)
+        quicksort(lista, menor, pivote-1)
+        quicksort(lista, pivote+1, mayor)
+
 def score_screen (window,score,name):
     run = True
     if player_list[0] != 0:
@@ -162,17 +192,16 @@ def score_screen (window,score,name):
 
     def highscore_check (added,name):
         #opens the txtfile
-        highscore_file = open(highscore_path, "r")
+        highscore_file = open(highscore_path, "r+")
         highscore_list = []
         #creates a list of the highscore names and scores
         highscore_list = highscore_file.readlines()
-
         #removes the \n character and splits each individual into a list, getting a matrix [[name,score],[name2,score2]
         for i in range (0,len(highscore_list)-1):
             highscore_list[i] = highscore_list[i].rstrip("\n")
             highscore_list[i] = highscore_list[i].split(",")
             #checks for the score element of the matrix and adds the highscore if needed
-            if score > int (highscore_list[i][1]) and added != True:
+            if score >= int(highscore_list[i][1]) and added != True:
                 highscore_list[i][0] = name 
                 highscore_list[i][1] = score
                 window.blit (high_label,((width/2)-(high_label.get_width()/2),(height/2)-high_label.get_height()+50+score_label.get_height()+50+score2_label.get_height()+50))
